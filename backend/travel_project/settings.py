@@ -1,24 +1,26 @@
-
 from pathlib import Path
+import os
+from datetime import timedelta
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# 🔐 SECURITY
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-change-this-in-production"
+)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+# ❗ Production mode (Render ke liye MUST)
+DEBUG = False
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)kva$q8v7%3-1er=)op(5^3u7*8oa=j&0tt2ca5ae(z*^^20lq'
+# 🌐 Allowed Hosts (YOUR RENDER URL)
+ALLOWED_HOSTS = [
+    "anytime-trips-1.onrender.com",
+    "127.0.0.1",
+    "localhost"
+]
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
-
-
-# Application definition
-
+# 📦 APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,15 +28,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+
     'api',
 ]
 
+# ⚙️ MIDDLEWARE
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # MUST be first
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,10 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'travel_project.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+# 🗄 DATABASE (SQLite for now)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -73,56 +75,36 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+# 🌐 CORS (YOUR VERCEL FRONTEND)
+CORS_ALLOWED_ORIGINS = [
+    "https://anytime-trips.vercel.app"
 ]
 
+# 🔐 SECURITY HEADERS (IMPORTANT FOR PRODUCTION)
+CSRF_TRUSTED_ORIGINS = [
+    "https://anytime-trips.vercel.app",
+    "https://anytime-trips-1.onrender.com"
+]
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+# ❌ REMOVE IN PRODUCTION
+# CORS_ALLOW_ALL_ORIGINS = True
 
+# 🌍 LANGUAGE / TIMEZONE
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
+# 📁 STATIC + MEDIA
 STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-import os
-from datetime import timedelta
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CORS_ALLOW_ALL_ORIGINS = True # For development only
+# 🔑 DEFAULT AUTO FIELD
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# 🔐 DRF + JWT AUTH
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
